@@ -19,15 +19,17 @@ function showQuestion(tagList) {
   const question = document.createElement('h2');
   const listOfAnswers = document.createElement('ul');
 
-  tagList.forEach((tag) => {
+  // формуємо питання та список варіантів відповідей
+  question.textContent = tagList[0].desc;
+  shuffle(tagList).forEach((tag) => {
     const item = document.createElement('li');
     item.textContent = tag.tag;
     listOfAnswers.append(item);
   });
-  question.textContent = tagList[0].desc;
 
   container.append(question, listOfAnswers);
 
+  // перевіряємо правильність відповіді
   listOfAnswers.addEventListener('click', (event) => {
     checkAnswer(event, tagList);
   });
@@ -36,14 +38,43 @@ function showQuestion(tagList) {
 }
 
 function checkAnswer(event, tagList) {
-  if (event.target.tagName === 'LI') {
-    if (event.target.textContent === tagList[0].tag) {
-      console.log('✅ Correct!');
-    } else {
-      console.log('❌ Wrong!');
-    }
+  if (event.target.tagName !== 'LI') return;
+
+  const chosen = event.target;
+  const correctTag = tagList[0].tag;
+  const answers = event.currentTarget.querySelectorAll('li');
+
+  // Забороняємо клікати повторно
+  answers.forEach((li) => (li.style.pointerEvents = 'none'));
+
+  if (chosen.textContent === correctTag) {
+    chosen.classList.add('green');
+    console.log('✅ Correct!');
+  } else {
+    chosen.classList.add('red');
+    console.log('❌ Wrong!');
+
+    // Підсвічуємо правильну відповідь
+    const correctItem = [...answers].find(
+      (li) => li.textContent === correctTag
+    );
+    if (correctItem) correctItem.classList.add('green');
   }
 }
+
+// function checkAnswer(event, tagList) {
+//   if (event.target.tagName === 'LI') {
+//     if (event.target.textContent === tagList[0].tag) {
+//       event.target.classList.add('green');
+//       console.log('✅ Correct!');
+//       console.log(event.target);
+//     } else {
+//       event.target.classList.add('red');
+//       console.log('❌ Wrong!');
+//       console.log(event.target);
+//     }
+//   }
+// }
 
 /*
 5. Логіка програми (JS-план)
