@@ -2,25 +2,37 @@ import { tags } from './data.js';
 
 const app = document.getElementById('app');
 
-const listOfTagsInTandomRrder = shuffle(tags);
-const fourTags = listOfTagsInTandomRrder.slice(0, 4);
-
-app.append(showQuestion(fourTags));
-
 // Функція рандомного сортування масиву
 function shuffle(array) {
-  return [...array].sort(() => {
-    return Math.random() - 0.5;
-  });
+  return [...array].sort(() => Math.random() - 0.5);
 }
 
-function showQuestion(tagList) {
+// функція яка рендерить всі картки тестів
+function showQuestions(tags, n) {
+  const wrapper = document.createElement('div');
+  let listOfTagsInRandomOrder = shuffle([...tags]);
+
+  for (let i = 0; i < n; i++) {
+    const selectedTags = listOfTagsInRandomOrder.slice(0, 4);
+    const tagSelectedForQuestion = selectedTags[0];
+    const card = showQuestion(selectedTags, tagSelectedForQuestion);
+    wrapper.append(card);
+
+    const index = listOfTagsInRandomOrder.indexOf(selectedTags[0]);
+    listOfTagsInRandomOrder.splice(index, 1);
+  }
+
+  return wrapper;
+}
+
+// функція яка рендерить одну картку з тесту
+function showQuestion(tagList, selectedTag) {
   const container = document.createElement('div');
   const question = document.createElement('h2');
   const listOfAnswers = document.createElement('ul');
 
-  // формуємо питання та список варіантів відповідей
-  question.textContent = tagList[0].desc;
+  question.textContent = selectedTag.desc;
+
   shuffle(tagList).forEach((tag) => {
     const item = document.createElement('li');
     item.textContent = tag.tag;
@@ -29,32 +41,25 @@ function showQuestion(tagList) {
 
   container.append(question, listOfAnswers);
 
-  // перевіряємо правильність відповіді
   listOfAnswers.addEventListener('click', (event) => {
-    checkAnswer(event, tagList);
+    checkAnswer(event, selectedTag.tag);
   });
 
   return container;
 }
 
-function checkAnswer(event, tagList) {
+// функція перевірки правильності відповіді
+function checkAnswer(event, correctTag) {
   if (event.target.tagName !== 'LI') return;
 
   const chosen = event.target;
-  const correctTag = tagList[0].tag;
   const answers = event.currentTarget.querySelectorAll('li');
-
-  // Забороняємо клікати повторно
   answers.forEach((li) => (li.style.pointerEvents = 'none'));
 
   if (chosen.textContent === correctTag) {
     chosen.classList.add('green');
-    console.log('✅ Correct!');
   } else {
     chosen.classList.add('red');
-    console.log('❌ Wrong!');
-
-    // Підсвічуємо правильну відповідь
     const correctItem = [...answers].find(
       (li) => li.textContent === correctTag
     );
@@ -62,32 +67,4 @@ function checkAnswer(event, tagList) {
   }
 }
 
-// function checkAnswer(event, tagList) {
-//   if (event.target.tagName === 'LI') {
-//     if (event.target.textContent === tagList[0].tag) {
-//       event.target.classList.add('green');
-//       console.log('✅ Correct!');
-//       console.log(event.target);
-//     } else {
-//       event.target.classList.add('red');
-//       console.log('❌ Wrong!');
-//       console.log(event.target);
-//     }
-//   }
-// }
-
-/*
-5. Логіка програми (JS-план)
-Ініціалізація:
-Отримати кількість тестів, яку обрав користувач.
-Випадково вибрати потрібну кількість тегів з бази.
-Генерація тесту:
-Для кожного опису згенерувати 4 варіанти (1 правильний + 3 випадкових).
-Обробка відповіді:
-Перевірити, чи правильна.
-Підсвітити результат.
-Заблокувати варіанти після вибору.
-Перехід до наступного питання.
-Підрахунок правильних відповідей.
-Показ фінального результату + кнопка “Пройти знову”.
-*/
+app.append(showQuestions(tags, 5));
