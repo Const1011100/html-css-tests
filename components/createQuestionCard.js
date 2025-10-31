@@ -1,4 +1,5 @@
 import { shuffleArray } from '../utils/helpers.js';
+import { _state } from '../data/state.js';
 
 // функція яка рендерить одну картку з тесту
 export function createQuestionCard(tagList, selectedTag) {
@@ -33,8 +34,10 @@ function handleAnswerSelection(event, correctTag) {
 
   if (chosen.textContent === correctTag) {
     chosen.classList.add('green');
+    _state.result.push('+');
   } else {
     chosen.classList.add('red');
+    _state.result.push('-');
     const correctItem = [...answers].find(
       (li) => li.textContent === correctTag
     );
