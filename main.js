@@ -37,11 +37,7 @@ function start() {
   }
   if (counter === limit) {
     console.log(_state.result);
-
-    return (app.innerHTML = `
-    <h2>Test finished!</h2>
-    <button>Restart</button>
-    `);
+    return app.append(restart());
   }
   const result = renderQuizCards(tags);
   app.innerHTML = '';
@@ -50,6 +46,25 @@ function start() {
   const index = tags.indexOf(result.targetTag);
   tags.splice(index, 1);
   counter++;
+}
+
+function restart() {
+  const wrapper = document.createElement('div');
+  const title = document.createElement('div');
+  const btnRestart = document.createElement('button');
+
+  title.textContent = 'Гру завершено!';
+  btnRestart.textContent = 'Почати заново';
+
+  btnRestart.addEventListener('click', () => {
+    tags = [...htmlTagsData];
+    counter = 0;
+    app.innerHTML = '';
+    app.append(menu());
+  });
+
+  wrapper.append(title, btnRestart);
+  return wrapper;
 }
 
 button.addEventListener('click', start);
