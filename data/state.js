@@ -1,3 +1,5 @@
 export const _state = {
-  result: [],
+  questionLimit: 0,
+  questionCount: 0,
+  correctAnswers: 0,
 };

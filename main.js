@@ -7,26 +7,26 @@ let tags = [...htmlTagsData];
 const app = document.getElementById('app');
 const button = navigation();
 const startMenu = menu();
-let counter = 0;
-let limit = 0;
 
 function menu() {
   const wrapper = document.createElement('div');
+  const title = document.createElement('h2');
+  title.textContent = 'Оберіть кількість питань';
 
   const btnLimit5 = navigation(5);
   btnLimit5.addEventListener('click', () => {
-    limit = 5;
+    _state.questionLimit = 5;
     app.innerHTML = '';
     app.append(button);
   });
   const btnLimit10 = navigation(10);
   btnLimit10.addEventListener('click', () => {
-    limit = 10;
+    _state.questionLimit = 10;
     app.innerHTML = '';
     app.append(button);
   });
 
-  wrapper.append(btnLimit5, btnLimit10);
+  wrapper.append(title, btnLimit5, btnLimit10);
   return wrapper;
 }
 
@@ -35,8 +35,9 @@ function start() {
     console.log('Усі теги використані!');
     return;
   }
-  if (counter === limit) {
+  if (_state.questionCount === _state.questionLimit) {
     console.log(_state.result);
+    app.innerHTML = '';
     return app.append(restart());
   }
   const result = renderQuizCards(tags);
@@ -45,20 +46,24 @@ function start() {
 
   const index = tags.indexOf(result.targetTag);
   tags.splice(index, 1);
-  counter++;
+  _state.questionCount++;
 }
 
 function restart() {
+  const result = _state.correctAnswers;
+  const questionLimit = _state.questionLimit;
   const wrapper = document.createElement('div');
   const title = document.createElement('div');
   const btnRestart = document.createElement('button');
 
-  title.textContent = 'Гру завершено!';
+  title.textContent = `Правильних відповідей: ${result} з ${questionLimit}`;
   btnRestart.textContent = 'Почати заново';
 
   btnRestart.addEventListener('click', () => {
     tags = [...htmlTagsData];
-    counter = 0;
+    _state.questionLimit = 0;
+    _state.questionCount = 0;
+    _state.correctAnswers = 0;
     app.innerHTML = '';
     app.append(menu());
   });

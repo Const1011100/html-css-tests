@@ -34,10 +34,9 @@ function handleAnswerSelection(event, correctTag) {
 
   if (chosen.textContent === correctTag) {
     chosen.classList.add('green');
-    _state.result.push('+');
+    _state.correctAnswers++;
   } else {
     chosen.classList.add('red');
-    _state.result.push('-');
     const correctItem = [...answers].find(
       (li) => li.textContent === correctTag
     );
