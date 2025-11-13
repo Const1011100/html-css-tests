@@ -13,6 +13,7 @@ const newArray = _state.tags.slice(0, _state.questionCount);
 
 console.log(newArray);
 
+// функція генерації масиву для формування одного тесту
 function generateChoices(correctTag, allTags) {
   const wrongTags = shuffle(
     allTags.filter((t) => {
